@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VEDA CURE - Profile & Feedback</title>
+  <style>
+    /* Reuse existing styles from main page */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --goldenrod: #DAA520;
+      --tan: #D2B48C;
+      --sienna: #A0522D;
+      --cadet-blue: #5F9EA0;
+      --powder-blue: #B0E0E6;
+      --success-green: #4CAF50;
+      --warning-orange: #FF9800;
+      --purple: #9C27B0;
+      --indigo: #3F51B5;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, var(--powder-blue), var(--cadet-blue));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--goldenrod), var(--tan));
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    .logo h1 {
+      color: var(--sienna);
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 2;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, var(--sienna), var(--goldenrod));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      animation: pulse 2s infinite;
+    }
+
+    .user-details h3 {
+      color: var(--sienna);
+      margin: 0;
+    }
+
+    .user-details p {
+      color: rgba(160, 82, 45, 0.8);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+      min-height: calc(100vh - 100px);
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(218, 165, 32, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      background: rgba(218, 165, 32, 0.4);
+      transform: translateX(-5px);
+    }
+
+    /* Profile Section */
+    .profile-section {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideInLeft 1s ease-out;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      color: var(--sienna);
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(45deg, var(--goldenrod), var(--cadet-blue));
+      border-radius: 2px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(45deg, var(--sienna), var(--goldenrod));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 2.5rem;
+      box-shadow: 0 10px 30px rgba(160, 82, 45, 0.3);
+    }
+
+    .profile-info h2 {
+      color: var(--sienna);
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-info p {
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-item {
+      background: rgba(95, 158, 160, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--sienna);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Appointments Section */
+    .appointments-section {
+      margin-bottom: 2rem;
+    }
+
+    .appointment-card {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--goldenrod);
+      transition: all 0.3s ease;
+    }
+
+    .appointment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .appointment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .appointment-title {
+      font-weight: bold;
+      color: var(--sienna);
+    }
+
+    .appointment-date {
+      color: var(--cadet-blue);
+      font-weight: bold;
+    }
+
+    .appointment-details {
+      display: flex;
+      justify-content: space-between;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .appointment-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .status-upcoming {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--success-green);
+    }
+
+    .status-completed {
+      background: rgba(158, 158, 158, 0.2);
+      color: #9E9E9E;
+    }
+
+    /* Feedback Section */
+    .feedback-section {
+      background: rgba(218, 165, 32, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+    }
+
+    .feedback-form {
+      margin-top: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--sienna);
+      font-weight: bold;
+    }
+
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid var(--tan);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--goldenrod);
+      box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+    }
+
+    .rating-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .rating-star {
+      font-size: 2rem;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .rating-star:hover,
+    .rating-star.active {
+      color: var(--goldenrod);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(45deg, var(--sienna), var(--goldenrod));
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(160, 82, 45, 0.4);
+    }
+
+    /* Feedback History */
+    .feedback-history {
+      margin-top: 2rem;
+    }
+
+    .feedback-item {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .feedback-treatment {
+      font-weight: bold;
+      color: var(--sienna);
+    }
+
+    .feedback-date {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .feedback-rating {
+      color: var(--goldenrod);
+      margin-bottom: 0.5rem;
+    }
+
+    .feedback-comment {
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 100px;
+      right: 2rem;
+      background: linear-gradient(45deg, var(--success-green), var(--goldenrod));
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+      transform: translateX(100%);
+      transition: transform 0.5s ease-out;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    /* Animations */
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .profile-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .appointment-header,
+      .appointment-details {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <h1>VEDA CURE</h1>
+    </div>
+    <div class="user-info">
+      <div class="user-avatar">RK</div>
+      <div class="user-details">
+        <h3>Rahul Kumar</h3>
+        <p>Panchakarma Patient</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="profile-section">
+      <button class="back-btn" onclick="goBack()">←</button>
+      
+      <h2 class="section-title">👤 Your Profile</h2>
+      
+      <div class="profile-header">
+        <div class="profile-avatar">RK</div>
+        <div class="profile-info">
+          <h2>Rahul Kumar</h2>
+          <p>rahul.k@example.com</p>
+          <p>+91 98765 43210</p>
+          <p>Member since: January 2023</p>
+        </div>
+      </div>
+      
+      <div class="profile-stats">
+        <div class="stat-item">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Total Sessions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">9</div>
+          <div class="stat-label">Feedback Given</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">85%</div>
+          <div class="stat-label">Progress</div>
+        </div>
+      </div>
+      
+      <div class="appointments-section">
+        <h3 style="color: var(--sienna); margin-bottom: 1rem;">📅 Upcoming Appointments</h3>
+        
+        <div class="appointment-card">
+          <div class="appointment-header">
+            <div class="appointment-title">Abhyanga Therapy</div>
+            <div class="appointment-date">Tomorrow, 10:00 AM</div>
+          </div>
+          <div class="appointment-details">
+            <div>Dr. Priya Sharma</div>
+            <div class="appointment-status status-upcoming">Confirmed</div>
+          </div>
+        </div>
+        
+        <div class="appointment-card">
+          <div class="appointment-header">
+            <div class="appointment-title">Shirodhara Session</div>
+            <div class="appointment-date">June 15, 2023, 2:30 PM</div>
+          </div>
+          <div class="appointment-details">
+            <div>Dr. Amit Verma</div>
+            <div class="appointment-status status-upcoming">Scheduled</div>
+          </div>
+        </div>
+        
+        <div class="appointment-card">
+          <div class="appointment-header">
+            <div class="appointment-title">Nasya Treatment</div>
+            <div class="appointment-date">June 22, 2023, 11:00 AM</div>
+          </div>
+          <div class="appointment-details">
+            <div>Dr. Sunita Rao</div>
+            <div class="appointment-status status-upcoming">Scheduled</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="feedback-section">
+        <h3 style="color: var(--sienna); margin-bottom: 1rem;">💬 Provide Feedback</h3>
+        
+        <div class="feedback-form">
+          <div class="form-group">
+            <label for="treatmentSelect">Select Treatment:</label>
+            <select id="treatmentSelect">
+              <option value="">-- Select a treatment --</option>
+              <option value="abhyanga">Abhyanga</option>
+              <option value="shirodhara">Shirodhara</option>
+              <option value="panchakarma">Panchakarma Detox</option>
+              <option value="nasya">Nasya</option>
+              <option value="kizhi">Kizhi</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Rate Your Experience:</label>
+            <div class="rating-container">
+              <span class="rating-star" data-value="1">★</span>
+              <span class="rating-star" data-value="2">★</span>
+              <span class="rating-star" data-value="3">★</span>
+              <span class="rating-star" data-value="4">★</span>
+              <span class="rating-star" data-value="5">★</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="feedbackComment">Your Feedback:</label>
+            <textarea id="feedbackComment" placeholder="Share your experience with this treatment..."></textarea>
+          </div>
+          
+          <button class="submit-btn" onclick="submitFeedback()">Submit Feedback</button>
+        </div>
+        
+        <div class="feedback-history">
+          <h3 style="color: var(--sienna); margin-bottom: 1rem; margin-top: 2rem;">📋 Feedback History</h3>
+          
+          <div class="feedback-item">
+            <div class="feedback-header">
+              <div class="feedback-treatment">Abhyanga Therapy</div>
+              <div class="feedback-date">June 5, 2023</div>
+            </div>
+            <div class="feedback-rating">★★★★★</div>
+            <div class="feedback-comment">The massage was incredibly relaxing. The herbal oils had a wonderful aroma and I felt completely rejuvenated afterward.</div>
+          </div>
+          
+          <div class="feedback-item">
+            <div class="feedback-header">
+              <div class="feedback-treatment">Shirodhara Session</div>
+              <div class="feedback-date">May 28, 2023</div>
+            </div>
+            <div class="feedback-rating">★★★★☆</div>
+            <div class="feedback-comment">Very calming experience. Felt mental clarity after the session, though the room could have been slightly warmer.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">
+    <strong>✅ Thank You!</strong><br>
+    Your feedback has been submitted successfully.
+  </div>
+
+  <script>
+    // Go back to main dashboard
+    function goBack() {
+      window.history.back();
+    }
+    
+    // Rating system
+    const stars = document.querySelectorAll('.rating-star');
+    let currentRating = 0;
+    
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const value = parseInt(star.getAttribute('data-value'));
+        currentRating = value;
+        
+        stars.forEach(s => {
+          const starValue = parseInt(s.getAttribute('data-value'));
+          if (starValue <= value) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+      });
+      
+      star.addEventListener('mouseover', () => {
+        const value = parseInt(star.getAttribute('data-value'));
+        
+        stars.forEach(s => {
+          const starValue = parseInt(s.getAttribute('data-value'));
+          if (starValue <= value) {
+            s.style.color = 'var(--goldenrod)';
+          }
+        });
+      });
+      
+      star.addEventListener('mouseout', () => {
+        stars.forEach(s => {
+          const starValue = parseInt(s.getAttribute('data-value'));
+          if (starValue > currentRating) {
+            s.style.color = '#ddd';
+          }
+        });
+      });
+    });
+    
+    // Submit feedback
+    function submitFeedback() {
+      const treatment = document.getElementById('treatmentSelect').value;
+      const comment = document.getElementById('feedbackComment').value;
+      
+      if (!treatment) {
+        alert('Please select a treatment');
+        return;
+      }
+      
+      if (currentRating === 0) {
+        alert('Please provide a rating');
+        return;
+      }
+      
+      if (!comment.trim()) {
+        alert('Please provide feedback comments');
+        return;
+      }
+      
+      // Show notification
+      const notification = document.getElementById('notification');
+      notification.classList.add('show');
+      
+      // In a real application, you would send this data to a server
+      console.log('Feedback submitted:', {
+        treatment,
+        rating: currentRating,
+        comment
+      });
+      
+      // Reset form
+      document.getElementById('treatmentSelect').value = '';
+      document.getElementById('feedbackComment').value = '';
+      
+      stars.forEach(s => {
+        s.classList.remove('active');
+        s.style.color = '#ddd';
+      });
+      currentRating = 0;
+      
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Sample data for appointments (in a real app, this would come from a database)
+    const appointments = [
+      {
+        title: 'Abhyanga Therapy',
+        date: 'Tomorrow, 10:00 AM',
+        doctor: 'Dr. Priya Sharma',
+        status: 'Confirmed'
+      },
+      {
+        title: 'Shirodhara Session',
+        date: 'June 15, 2023, 2:30 PM',
+        doctor: 'Dr. Amit Verma',
+        status: 'Scheduled'
+      },
+      {
+        title: 'Nasya Treatment',
+        date: 'June 22, 2023, 11:00 AM',
+        doctor: 'Dr. Sunita Rao',
+        status: 'Scheduled'
+      }
+    ];
+  </script>
+</body>
+</html>

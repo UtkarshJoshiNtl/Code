@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VEDA CURE - Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --goldenrod: #DAA520;
+      --tan: #D2B48C;
+      --sienna: #A0522D;
+      --cadet-blue: #5F9EA0;
+      --powder-blue: #B0E0E6;
+      --success-green: #4CAF50;
+      --warning-orange: #FF9800;
+      --purple: #9C27B0;
+      --indigo: #3F51B5;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, var(--powder-blue), var(--cadet-blue));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--goldenrod), var(--tan));
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    .logo h1 {
+      color: var(--sienna);
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 2;
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, var(--sienna), var(--goldenrod));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      animation: pulse 2s infinite;
+    }
+
+    .user-details h3 {
+      color: var(--sienna);
+      margin: 0;
+    }
+
+    .user-details p {
+      color: rgba(160, 82, 45, 0.8);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+      min-height: calc(100vh - 100px);
+    }
+
+    /* Treatment Booking Section - Left Side */
+    .booking-section {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideInLeft 1s ease-out;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      color: var(--sienna);
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(45deg, var(--goldenrod), var(--cadet-blue));
+      border-radius: 2px;
+    }
+
+    .treatment-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .treatment-card {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .treatment-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(218, 165, 32, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .treatment-card:hover::before {
+      left: 100%;
+    }
+
+    .treatment-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--goldenrod);
+      box-shadow: 0 15px 40px rgba(218, 165, 32, 0.3);
+    }
+
+    .treatment-card.selected {
+      border-color: var(--goldenrod);
+      background: rgba(218, 165, 32, 0.1);
+      transform: scale(1.02);
+    }
+
+    .treatment-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .treatment-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--goldenrod), var(--tan));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .treatment-details h3 {
+      color: var(--sienna);
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .treatment-details p {
+      color: #666;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .booking-form {
+      background: rgba(95, 158, 160, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .booking-form.active {
+      display: block;
+      animation: slideDown 0.5s ease-out;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--sienna);
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid var(--tan);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--goldenrod);
+      box-shadow: 0 0 15px rgba(218, 165, 32, 0.3);
+    }
+
+    .book-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(45deg, var(--sienna), var(--goldenrod));
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(160, 82, 45, 0.4);
+    }
+
+    /* Analytics Section - Right Side */
+    .analytics-section {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideInRight 1s ease-out;
+    }
+
+    .progress-overview {
+      margin-bottom: 3rem;
+    }
+
+    .progress-card {
+      background: linear-gradient(135deg, var(--purple), var(--indigo));
+      color: white;
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      z-index: 2;
+      position: relative;
+    }
+
+    .level-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-weight: bold;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .progress-bar-container {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 0.3rem;
+      margin-bottom: 1rem;
+      z-index: 2;
+      position: relative;
+    }
+
+    .progress-bar {
+      background: linear-gradient(45deg, var(--goldenrod), var(--success-green));
+      height: 20px;
+      border-radius: 7px;
+      transition: width 2s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: progress-shine 2s infinite;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.8);
+      padding: 1.5rem;
+      border-radius: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(45deg, var(--cadet-blue), var(--goldenrod));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      animation: countUp 2s ease-out;
+    }
+
+    .stat-label {
+      color: var(--sienna);
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .achievements {
+      background: rgba(218, 165, 32, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+    }
+
+    .achievement-badge {
+      display: inline-block;
+      background: linear-gradient(45deg, var(--goldenrod), var(--warning-orange));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      margin: 0.25rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .health-chart {
+      background: rgba(95, 158, 160, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .chart-container {
+      width: 200px;
+      height: 200px;
+      margin: 1rem auto;
+      position: relative;
+    }
+
+    .circular-progress {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: conic-gradient(var(--success-green) 75%, #e0e0e0 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 3s ease-in-out;
+    }
+
+    .circular-progress::before {
+      content: '';
+      width: 140px;
+      height: 140px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .chart-text {
+      position: absolute;
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--sienna);
+      z-index: 3;
+    }
+
+    .notification {
+      position: fixed;
+      top: 100px;
+      right: 2rem;
+      background: linear-gradient(45deg, var(--success-green), var(--goldenrod));
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+      transform: translateX(100%);
+      transition: transform 0.5s ease-out;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    /* Animations */
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+      100% { box-shadow: 0 0 20px rgba(255,255,255,0.6); }
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes progress-shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes countUp {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(-90deg); }
+      to { transform: rotate(180deg); }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script>
+</script>
+  <div class="header">
+    <div class="logo">
+      <h1>VEDA CURE</h1>
+    </div>
+    <div class="user-info" onclick="window.location.href='index3.html'">
+  <div class="user-avatar">RK</div>
+  <div class="user-details">
+    <h3>Rahul Kumar</h3>
+    <p>View Profile →</p>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <!-- Treatment Booking Section -->
+    <div class="booking-section">
+      <h2 class="section-title">🌿 Select Panchakarma Treatment</h2>
+      
+      <div class="treatment-grid">
+        <div class="treatment-card" data-treatment="abhyanga">
+          <div class="treatment-info">
+            <div class="treatment-icon">🛢️</div>
+            <div class="treatment-details">
+              <h3>Abhyanga</h3>
+              <p>Full body massage with warm herbal oils for relaxation and detoxification</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="treatment-card" data-treatment="shirodhara">
+          <div class="treatment-info">
+            <div class="treatment-icon">💧</div>
+            <div class="treatment-details">
+              <h3>Shirodhara</h3>
+              <p>Continuous pouring of medicated oil on forehead for mental calmness</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="treatment-card" data-treatment="panchakarma">
+          <div class="treatment-info">
+            <div class="treatment-icon">🌸</div>
+            <div class="treatment-details">
+              <h3>Panchakarma Detox</h3>
+              <p>Complete 5-step detoxification and rejuvenation therapy</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="treatment-card" data-treatment="nasya">
+          <div class="treatment-info">
+            <div class="treatment-icon">🌬️</div>
+            <div class="treatment-details">
+              <h3>Nasya</h3>
+              <p>Nasal administration of herbal medicines for respiratory health</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="treatment-card" data-treatment="kizhi">
+          <div class="treatment-info">
+            <div class="treatment-icon">🍃</div>
+            <div class="treatment-details">
+              <h3>Kizhi</h3>
+              <p>Herbal pouch massage for joint pain and muscle stiffness</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-form" id="bookingForm">
+        <h3 style="color: var(--sienna); margin-bottom: 1rem;">📅 Schedule Your Treatment</h3>
+        
+        <div class="form-group">
+          <label>Selected Treatment:</label>
+          <input type="text" id="selectedTreatment" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Date:</label>
+          <input type="date" id="appointmentDate" min="">
+        </div>
+
+        <div class="form-group">
+          <label>Assigned Doctor:</label>
+          <select id="assignedDoctor">
+            <option value="">System will assign...</option>
+            <option value="Dr. Priya Sharma">Dr. Priya Sharma - Panchakarma Specialist</option>
+            <option value="Dr. Amit Verma">Dr. Amit Verma - Ayurveda Expert</option>
+            <option value="Dr. Sunita Rao">Dr. Sunita Rao - Detox Specialist</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Assigned Time Slot:</label>
+          <input type="text" id="timeSlot" readonly placeholder="Will be assigned automatically">
+        </div>
+
+        <button class="book-btn" onclick="bookAppointment()">
+          🕐 Book Appointment
+        </button>
+      </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">📊 Your Health Journey</h2>
+      <div class="progress-overview">
+        <div class="progress-card">
+          <div class="progress-header">
+            <h3>Overall Progress</h3>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 0%;"></div>
+          </div>
+            <p style="z-index: 2; position: relative;">75% of your Panchakarma journey completed</p>
+          </div>
+          <div></div>
+           <div>
+            <div class="session-timer" id="sessionTimer">05:59:30</div>
+            <p>Time till next session</p>
+          </div>
+          <div class="session-status">
+            <span class="status-indicator"></span>
+          </div>
+        </div>
+
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Active streak!</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">10</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">16</div>
+          <div class="stat-label">Days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">9</div>
+          <div class="stat-label">Times Feedback given</div>
+        </div>
+      </div>
+
+      <div class="achievements">
+        <h3 style="color: var(--sienna); margin-bottom: 1rem;">🏅 Recent Achievements</h3>
+        <div class="achievement-badge">Consistent Patient</div>
+        <div class="achievement-badge">Wellness Warrior</div>
+        <div class="achievement-badge">Detox Champion</div>
+        <div class="achievement-badge">Health Enthusiast</div>
+        <div class="achievement-badge">Progress Maker</div>
+      </div>
+
+
+  <div class="notification" id="notification">
+    <strong>🎉 Appointment Booked!</strong><br>
+    Your session has been scheduled successfully. You should soon recieve an SMS so stay tuned.
+  </div>
+
+  <script>
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('appointmentDate').min = today;
+
+    // Treatment selection handling
+    const treatmentCards = document.querySelectorAll('.treatment-card');
+    const bookingForm = document.getElementById('bookingForm');
+    const selectedTreatmentInput = document.getElementById('selectedTreatment');
+    const timeSlotInput = document.getElementById('timeSlot');
+    const assignedDoctorSelect = document.getElementById('assignedDoctor');
+
+    const treatmentNames = {
+      'abhyanga': 'Abhyanga - Full Body Oil Massage',
+      'shirodhara': 'Shirodhara - Oil Pouring Therapy',
+      'panchakarma': 'Panchakarma - Complete Detox',
+      'nasya': 'Nasya - Nasal Therapy',
+      'kizhi': 'Kizhi - Herbal Pouch Massage'
+    };
+
+    const timeSlots = [
+      '9:00 AM - 10:00 AM',
+      '10:30 AM - 11:30 AM',
+      '2:00 PM - 3:00 PM',
+      '3:30 PM - 4:30 PM',
+      '5:00 PM - 6:00 PM'
+    ];
+
+    const doctors = [
+      'Dr. Priya Sharma - Panchakarma Specialist',
+      'Dr. Amit Verma - Ayurveda Expert',
+      'Dr. Sunita Rao - Detox Specialist'
+    ];
+
+    treatmentCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Remove selected class from all cards
+        treatmentCards.forEach(c => c.classList.remove('selected'));
+        
+        // Add selected class to clicked card
+        card.classList.add('selected');
+        
+        // Show booking form
+        bookingForm.classList.add('active');
+        
+        // Set treatment name
+        const treatment = card.getAttribute('data-treatment');
+        selectedTreatmentInput.value = treatmentNames[treatment];
+        
+        // Auto-assign random time slot and doctor
+        const randomTimeSlot = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+        const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
+        
+        timeSlotInput.value = randomTimeSlot;
+        assignedDoctorSelect.value = randomDoctor;
+        
+        // Scroll to form
+        bookingForm.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Animate progress bars on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.progress-bar').style.width = '75%';
+      }, 500);
+    });
+
+    // Animate stat numbers
+    function animateNumbers() {
+      const statNumbers = document.querySelectorAll('.stat-number');
+      statNumbers.forEach((num, index) => {
+        const finalValue = parseInt(num.textContent.replace('%', ''));
+        let currentValue = 0;
+        const increment = finalValue / 50;
+        
+        const timer = setInterval(() => {
+          currentValue += increment;
+          if (currentValue >= finalValue) {
+            currentValue = finalValue;
+            clearInterval(timer);
+          }
+          num.textContent = Math.floor(currentValue) + (num.textContent.includes('%') ? '%' : '');
+        }, 30);
+      });
+    }
+
+    // Start animation after a delay
+    setTimeout(animateNumbers, 1000);
+
+    // Booking function
+    function bookAppointment() {
+      const selectedTreatment = selectedTreatmentInput.value;
+      const appointmentDate = document.getElementById('appointmentDate').value;
+      const doctor = assignedDoctorSelect.value;
+      const timeSlot = timeSlotInput.value;
+
+      if (!selectedTreatment || !appointmentDate) {
+        alert('Please select a treatment and date');
+        return;
+      }
+
+      // Show notification
+      const notification = document.getElementById('notification');
+      notification.classList.add('show');
+      
+      // Update stats (simulated)
+      setTimeout(() => {
+        const sessionsCompleted = document.querySelector('.stat-number');
+        let currentSessions = parseInt(sessionsCompleted.textContent);
+        sessionsCompleted.textContent = currentSessions + 1;
+        
+        // Hide notification after 3 seconds
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3000);
+      }, 1000);
+      
+      console.log('Booking Details:', {
+        treatment: selectedTreatment,
+        date: appointmentDate,
+        doctor: doctor,
+        time: timeSlot
+      });
+    }
+
+    // Add floating animations to achievement badges
+    document.querySelectorAll('.achievement-badge').forEach((badge, index) => {
+      badge.style.animationDelay = `${index * 0.2}s`;
+    });
+
+    // Add hover effects for treatment cards
+    treatmentCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        const icon = card.querySelector('.treatment-icon');
+        icon.style.transform = 'scale(1.2) rotate(360deg)';
+        icon.style.transition = 'transform 0.5s ease';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        const icon = card.querySelector('.treatment-icon');
+        icon.style.transform = 'scale(1) rotate(0deg)';
+      });
+    });
+  </script>
+</body>
+</html>
